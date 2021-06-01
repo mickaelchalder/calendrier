@@ -1,17 +1,20 @@
 <?php  
 require_once 'Gestion.php';
 
+$calendrier = new DateTime();
 if(!isset($year)){$year=date("Y");}
 if(!isset($month)){$month=date("m");}
 if(!isset($day)){$day=date("d");}
-if(!isset($date)){$date=date("M,D,Y");}
+if(!isset($date)){ $date = $calendrier->format('Y-m-d');}
 
 
 if(isset($_GET['DATE']))
     {
-        
-        $newDate = $_GET['DATE'];
-        $month = date("m,d,Y",$_GET['DATE']);
+        $temps = explode("-", $_GET['DATE']);
+        $newYear = $temps[2];
+        $newMonth  = $temps[0];
+        $newDay = $temps[1];
+        $newDate = date("Y-m-d",mktime(0, 0,0 , $temps[0], $temps[1], $temps[2]));
     }else
     {
         $month = date("m");
@@ -19,37 +22,19 @@ if(isset($_GET['DATE']))
 
 
 
-/* if(!empty($_GET["var"]) && $_GET["var"] === '1')
-{
-    if (isset ($verif)) $verif === 1;
-}elseif(!empty($_GET["var"]) && $_GET["var"] === '2'){
-    if (isset ($verif)) $verif === 2;
-}
-
-if($verif === 1)
-{
-    if(isset($year)){$year=date("Y");}
-    if(isset($month)){$month=date("m");}
-    if(isset($day)){$day=date("d");}
-}elseif ($verif = 2) {
-    if(!isset($year)){$year=date("Y");}
-    if(!isset($month)){$month=date("m");}
-    if(!isset($day)){$day=date("d");}
-} */
-
-
-
-
-$jours = array(1=>"Lu",2=>"Ma",3=>"Me",4=>"Je",5=>"Ve",6=>"Sa",0=>"Di"); //tableau d'initialisation de la semaine
+$jours = array(0=>"Di",1=>"Lu",2=>"Ma",3=>"Me",4=>"Je",5=>"Ve",6=>"Sa",7=>"Di"); //tableau d'initialisation de la semaine
 if(!isset($mois)){$mois = array(1=>"Janvier",2=>"Février",3=>"Mars",4=>"Avril",5=>"Mai",6=>"Juin",7=>"Juillet",8=>"Août",9=>"Septembre",10=>"Octobre",11=>"Novembre",12=>"Décembre");}
+
+
+if(!isset($NbrDeJour)){$NbrDeJour[intval($calendrier->format('m'))]=date("t",mktime(1,1,1,intval($calendrier->format('m')),1,intval($calendrier->format('Y'))));}
 	
-if(!isset($NbrDeJour)){$NbrDeJour[intval($month)]=date("t",mktime(1,1,1,intval($month),1,intval($year)));}
-	
-if(!isset($PremierJourDuMois)){$PremierJourDuMois[intval($month)]=date("w",mktime(1,1,1,intval($month),1,intval($year)));}
+if(!isset($PremierJourDuMois)){$PremierJourDuMois[intval($calendrier->format('m'))]=date("w",mktime(1,1,1,intval($calendrier->format('m')),1,intval($calendrier->format('Y'))));}
 
 if (isset($_GET['DATE'])) {
+
+    if(!isset($NbrDeJour)){$NbrDeJour[intval($newMonth)]=date("t",mktime(1,1,1,intval($newMonth),1,intval($newYear)));}
  
-    if(!isset($newDate)){$PremierJourDuMois[intval($month)]=date("w",mktime(1,1,1,intval($month),1,intval($year)));}
+    if(!isset($newDate)){$PremierJourDuMois[intval($newMonth)]=date("w",mktime(1,1,1,intval($newMonth),1,intval($newYear)));}
 }
 
 
@@ -67,52 +52,61 @@ if (isset($_GET['DATE'])) {
     <div class="container">
         <div class="month">      
         <ul>
-            <?php  
-            echo"
-            
+            <?php
+                echo "
                 <form action='../calendrier/Gestion.php' method='post' >
                     <input type='hidden' name='prev' value='";
-                  if (isset($newDate)) {
-                    echo "$newDate";
-                  }else{
-                    echo  "$date";
-                } 
-                  
-             echo       "'>
-                    <input class='prev nobutton' type='submit' value='&#10094;' >
-                </form>";
-            echo"    
-                <form action='../calendrier/Gestion.php' method='post' >
-                    <input type='hidden' name='next' value='";
+
                     if (isset($newDate)) {
                         echo "$newDate";
                       }else{
                         echo  "$date";
-                    };
-            echo "'>
+                    } 
+
+                echo "   
+                    '>
+                    <input class='prev nobutton' type='submit' value='&#10094;' >
+                </form>
+                <form action='../calendrier/Gestion.php' method='post' >
+                    <input type='hidden' name='next' value='";
+                    
+                    if (isset($newDate)) {
+                        echo "$newDate";
+                      }else{
+                        echo  "$date";
+                    } 
+
+                echo "    
+                    '>
                     <input class='next nobutton' type='submit'  value='&#10095;' >
                 </form>
                 <li>";
+                
+              
                 foreach ($mois as $key => $value) {
-                    
-                    if ($key===intval($month)) {
+                    if (isset($newMonth)){ 
+                        if($key===intval($newMonth)){
+                        echo "$value";
+                        }
+                    }elseif ($key===intval($calendrier->format('m'))) {
                         echo "$value";
                     }
-            }?>
+                }
+            ?>
        <br>
-            <span style="font-size:18px"><?php echo "$year";?></span>
+            <span style="font-size:18px"><?php  if (isset($newYear)){ echo $newYear;}else{echo $calendrier->format('Y');} ?></span>
             </li>
         </ul>
         </div>
 
         <ul class="weekdays">
-        <?php $jours = array(1=>"Lu",2=>"Ma",3=>"Me",4=>"Je",5=>"Ve",6=>"Sa",7=>"Di",8=>"Lu",9=>"Ma",10=>"Me",11=>"Je",12=>"Ve",13=>"Sa"); //tableau d'initialisation de la semaine
+        <?php $jours = array(1=>"Lu",2=>"Ma",3=>"Me",4=>"Je",5=>"Ve",6=>"Sa",7=>"Di",8=>"Lu",9=>"Ma",10=>"Me",11=>"Je",12=>"Ve",13=>"Sa",0=>"Di"); //tableau d'initialisation de la semaine
                 
        
         
         //echo " $day $month $year  ";
         $i = 1;  
-        $x = $PremierJourDuMois[intval($month)];
+        $x = $PremierJourDuMois[intval($calendrier->format('m'))];
             while( $i <= 7)
             { 
                 echo "<li >";
@@ -131,10 +125,10 @@ if (isset($_GET['DATE'])) {
 
 
 
-            for($x = 1; $x <= $NbrDeJour[intval($month)]; $x++)
+            for($x = 1; $x <= $NbrDeJour[intval($calendrier->format('m'))]; $x++)
             {
                 echo "<li >";
-                if ($x === intval($day)) {
+                if ($x === intval($calendrier->format('d'))  ) {
                     echo "<span class='active'>";
                     echo $x ;
                     echo "</span>";
