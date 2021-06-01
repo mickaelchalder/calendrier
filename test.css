@@ -4,10 +4,15 @@ body {font-family: Verdana, sans-serif;}
 
 a{
   text-decoration: none;
+  color: #666;
+}
+
+a:hover{
+  color: rgb(197, 182, 182);
 }
 
 .container{
-    width: 33%;
+    width: 27%;
     display:block;
 }
 .nobutton{
@@ -22,6 +27,7 @@ a{
 .nobutton:hover{
   color:rgba(77, 61, 54, 0.596);
   font-size: x-large;
+  cursor: pointer;
 }
 
 .month {

@@ -128,7 +128,7 @@ if (isset($_GET['DATE'])) { //la même chose mais avec la date récupéré à l'
             while( $i <= 7)
             { 
                 echo "<li >";
-                echo $jours[$x] ; // je commence par le premier jour du mois 
+                echo "$jours[$x]" ; // je commence par le premier jour du mois 
                 echo "</li>";
                 $x++;
                 $i++;
@@ -144,9 +144,9 @@ if (isset($_GET['DATE'])) { //la même chose mais avec la date récupéré à l'
         if (isset($_GET['DATE'])) { // boucle d'affichage du nombre de jours du mois 
             for($x = 1; $x <= $NbrDeJour[intval($calendrier->format($newMonth))]; $x++)
             {
-                echo "<li >";
+                echo "<li ><a href='#'>";
                     echo $x ;
-                echo "</li>";
+                echo "</a></li>";
             }
 
         }else{
@@ -155,18 +155,19 @@ if (isset($_GET['DATE'])) { //la même chose mais avec la date récupéré à l'
             {
                 echo "<li >";
                 if ($x === intval($calendrier->format('d')) ) {
-                    echo "<span class='active'>";
+                    echo "<span class='active'><a href='#'>";
                     echo $x ;
-                    echo "</span>";
+                    echo "</a></span>";
                 }else {
+                    echo "<a href='#'>";
                     echo $x ;
+                    echo "</a>";
                 }
                 echo "</li>";
             }
         }
         ?>
         
-       
         </ul>
     </div>
 </body>
