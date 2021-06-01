@@ -2,6 +2,7 @@
 require_once 'Gestion.php';
 
 $calendrier = new DateTime();
+$jour = new DateTime();
 if(!isset($year)){$year=date("Y");}
 if(!isset($month)){$month=date("m");}
 if(!isset($day)){$day=date("d");}
@@ -32,9 +33,9 @@ if(!isset($PremierJourDuMois)){$PremierJourDuMois[intval($calendrier->format('m'
 
 if (isset($_GET['DATE'])) {
 
-    if(!isset($NbrDeJour)){$NbrDeJour[intval($newMonth)]=date("t",mktime(1,1,1,intval($newMonth),1,intval($newYear)));}
+    if(isset($NbrDeJour)){$NbrDeJour[intval($newMonth)]=date("t",mktime(1,1,1,intval($newMonth),1,intval($newYear)));}
  
-    if(!isset($newDate)){$PremierJourDuMois[intval($newMonth)]=date("w",mktime(1,1,1,intval($newMonth),1,intval($newYear)));}
+    if(isset($newDate)){$PremierJourDuMois[intval($newMonth)]=date("w",mktime(1,1,1,intval($newMonth),1,intval($newYear)));}
 }
 
 
@@ -106,7 +107,11 @@ if (isset($_GET['DATE'])) {
         
         //echo " $day $month $year  ";
         $i = 1;  
-        $x = $PremierJourDuMois[intval($calendrier->format('m'))];
+        if (isset($_GET['DATE'])) {
+            $x = $PremierJourDuMois[intval($calendrier->format($newMonth))];
+        }else{
+            $x = $PremierJourDuMois[intval($calendrier->format('m'))];
+        }
             while( $i <= 7)
             { 
                 echo "<li >";
@@ -123,12 +128,20 @@ if (isset($_GET['DATE'])) {
         <ul class="days">  
         <?php 
 
+        if (isset($_GET['DATE'])) {
+            for($x = 1; $x <= $NbrDeJour[intval($calendrier->format($newMonth))]; $x++)
+            {
+                echo "<li >";
+                    echo $x ;
+                echo "</li>";
+            }
 
+        }else{
 
             for($x = 1; $x <= $NbrDeJour[intval($calendrier->format('m'))]; $x++)
             {
                 echo "<li >";
-                if ($x === intval($calendrier->format('d'))  ) {
+                if ($x === intval($calendrier->format('d')) ) {
                     echo "<span class='active'>";
                     echo $x ;
                     echo "</span>";
@@ -137,7 +150,7 @@ if (isset($_GET['DATE'])) {
                 }
                 echo "</li>";
             }
-
+        }
         ?>
         
        
