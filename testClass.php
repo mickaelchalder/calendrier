@@ -2,6 +2,10 @@
 
 require_once "Calendrier.class.php";
 
-$var=Calendrier::build();
-$date=$var->year;
+$var=Calendrier::buildCalendrier();
+$date=$var->date;
+$newvar=Calendrier::buildNewCalendrier($date);
+$newdate=$newvar->newDate;
 echo $date;
+echo "<br>";
+echo $newdate;
